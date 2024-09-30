@@ -1,0 +1,26 @@
+[package]
+name = "rs-axum-admin"
+version = "0.1.0"
+edition = "2021"
+
+
+
+[workspace]
+members = [".", "pkg", "app"]
+
+[dependencies]
+#命令行解析器
+clap = { version = "4.5.18", features = ["derive"]}
+
+#异步
+tokio = { version = "1.40.0", features = ["full"]}
+
+#日志
+tracing = "0.1.40"
+tracing-subscriber = "0.3.18"
+tracing-appender = "0.2.3"
+
+# workspace modules
+pkg = { path = "pkg" }
+app = { path = "app" }
+
