@@ -1,0 +1,64 @@
+[package]
+name = "pkg"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+#异步
+tokio = { version = "1.40.0", features = ["full"]}
+
+#错误处理
+anyhow = "1.0.89"
+thiserror = "1.0.64"
+
+#序列化/反序列化
+serde = { version = "1.0.210", features = ["derive"]} 
+serde_json = "1.0.128"
+
+config = "0.14.0"
+
+
+#日志
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["json"]}
+tracing-appender = "0.2.3"
+
+#Web
+axum = { version = "0.7.6", features = ["macros"]}
+axum-extra = "0.9.4"
+
+# 数据验证
+validator = { version = "0.18.1", features = ["derive"]}
+
+# orm 
+sea-orm = { version = "1.0.1", features = [
+    "sqlx-mysql",
+    "runtime-tokio-rustls",
+    "macros",
+    "debug-print",
+]}
+# 日期
+chrono = "0.4.38"
+time = { version = "0.3.36", features = ["macros", "local-offset", "formatting", "parsing"] }
+# 编码
+base64 = "0.22.1"
+
+# 加密
+md-5 = "0.10.6"
+sha1 = "0.10.6"
+sha2 = "0.10.8"
+hmac = "0.12.1"
+digest = "0.10.7"
+const-hex = "1.12.0"
+rand = "0.8.5"
+
+# 令牌
+jsonwebtoken = "9.3.0"
+http = "1.1.0"
+http-body = "1.0.1"
+http-body-util = "0.1.2"
+hyper = "1.4.1"
+nanoid = "0.4.0"
+
+# openssl = {version = "0.10.66", features = ["vendored"]}
+
