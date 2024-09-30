@@ -1,0 +1,13 @@
+[app]
+env = "dev"
+port = 8000
+debug = true
+secret = "3f4e25e75c08dbf60ad6533c50167ce3"
+
+[db]
+dsn = "mysql://root:root@localhost:3306/rs_admin"
+options = { min_conns = 10, max_conns = 20, conn_timeout = 10, idle_timeout = 300, max_lifetime = 60 }
+
+[log]
+path = "logs"
+filename = "tracing.log"
