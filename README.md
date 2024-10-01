@@ -32,5 +32,4 @@ mv config.toml.example config.toml
 # 启动服务
 cargo run -- serve
 
-#### 3. 代码持续更新中
-```
+#### 3. 更新中
