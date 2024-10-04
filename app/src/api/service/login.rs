@@ -64,7 +64,9 @@ pub async fn login(req: ReqLogin) -> Result<ApiOK<RespLogin>> {
         }
 
         let now = xtime::now(offset!(+8)).unix_timestamp();
+        //自定义token
         let login_token = md5(format!("auth.{}.{}.{}", model.employee_id, now, util::nonce(16)).as_bytes());
+        // 加密token
         let auth_token = Identity::new(model.employee_id, login_token.clone())
         .to_auth_token()
         .map_err(|e| {
@@ -72,12 +74,14 @@ pub async fn login(req: ReqLogin) -> Result<ApiOK<RespLogin>> {
             ApiErr::ErrSystem(None)
         })?;
 
+        // 封装修改model
         let update_model = t_employee::ActiveModel {
             login_at: Set(now),
             login_token: Set(login_token),
             update_time: Set(now),
             ..Default::default()
         };
+        // 更新T_employee表数据
         let ret_update = TEmployee::update_many()
             .filter(t_employee::Column::EmployeeId.eq(model.employee_id))
             .set(update_model)
