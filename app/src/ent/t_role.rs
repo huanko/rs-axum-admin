@@ -8,9 +8,8 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub role_id: i64,
     pub role_name: String,
-    #[sea_orm(unique)]
-    pub role_code: Option<String>,
-    pub remark: Option<String>,
+    pub role_code: String,
+    pub remark:String,
     pub update_time: i64,
     pub create_time: i64,
 }

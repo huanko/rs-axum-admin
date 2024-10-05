@@ -7,7 +7,7 @@ use axum::{
 use tower_http::trace::TraceLayer;
 
 use crate::api::{
-    controller::{login},
+    controller::{login,role},
     middleware,
 };
 
@@ -18,10 +18,8 @@ pub fn init() -> Router{
     // 需授权
     let auth = Router::new()
         .route("/logout", get(login::logout))
-        // .route("/posts", get(sys_post_controller::list).post(sys_post_controller::create))
-        // .route("/posts/:post_id", get(sys_post_controller::info))
-        // .route("/projects", get(project::list).post(project::create))
-        // .route("/projects/:project_id", get(project::detail))
+        .route("/roles", get(role::list).post(role::create))
+        .route("/roles/:post_id", get(role::info).post(role::update).delete(role::delete))
         .layer(axum::middleware::from_fn(middleware::auth::handle));
 
         Router::new()
