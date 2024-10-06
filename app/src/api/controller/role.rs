@@ -22,10 +22,6 @@ pub async fn create(
     Extension(identity): Extension<Identity>,
     WithRejection(Json(req), _): IRejection<Json<ReqCreate>>,
 ) -> Result<ApiOK<()>> {
-    // if !identity.is_role(Role::Super) {
-    //     return Err(ApiErr::ErrPerm(None));
-    // }
-
     if let Err(e) = req.validate() {
         return Err(ApiErr::ErrParams(Some(e.to_string())));
     }
@@ -36,9 +32,6 @@ pub async fn info(
     Extension(identity): Extension<Identity>,
     Path(role_id): Path<u64>,
 ) -> Result<ApiOK<RespInfo>> {
-    // if !identity.is_role(Role::Super) {
-    //     return Err(ApiErr::ErrPerm(None));
-    // }
 
     service::role::info(role_id).await
 }
@@ -47,9 +40,7 @@ pub async fn list(
     Extension(identity): Extension<Identity>,
     Query(query): Query<HashMap<String, String>>,
 ) -> Result<ApiOK<RespList>> {
-    // if !identity.is_role(Role::Super) {
-    //     return Err(ApiErr::ErrPerm(None));
-    // }
+
     service::role::list(query).await
 }
 
@@ -68,8 +59,6 @@ pub async fn delete(
     Extension(identity): Extension<Identity>,
     Path(role_id): Path<u64>,
 ) -> Result<ApiOK<()>>  {
-    // if !identity.is_role(Role::Super) {
-    //     return Err(ApiErr::ErrPerm(None));
-    // }
+
     service::role::delete(role_id).await
 }

@@ -16,6 +16,7 @@ use crate::api::service::{
 pub async fn login(
     WithRejection(Json(req), _): IRejection<Json<ReqLogin>>,
 ) -> Result<ApiOK<RespLogin>> {
+
     if let Err(e) = req.validate() {
         return Err(ApiErr::ErrParams(Some(e.to_string())));
     }
