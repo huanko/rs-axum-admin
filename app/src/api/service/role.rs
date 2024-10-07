@@ -198,7 +198,7 @@ pub async fn update(req: UpdateInfo) -> Result<ApiOK<()>> {
     };
 
     if let Err(e) = TRole::update(model).exec(db::conn()).await {
-        tracing::error!(error = ?e, "error insert t_role");
+        tracing::error!(error = ?e, "error update t_role");
         return Err(ApiErr::ErrSystem(None));
     }
     Ok(ApiOK(None))

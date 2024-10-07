@@ -9,7 +9,7 @@ use validator::Validate;
 
 use crate::api::service::{
     self,
-    role::{ReqCreate, RespInfo, RespList,UpdateInfo},
+    position::{ReqCreate, RespInfo, RespList,UpdateInfo},
 };
 use pkg::identity::Identity;
 use pkg::result::{
@@ -25,7 +25,7 @@ pub async fn create(
     if let Err(e) = req.validate() {
         return Err(ApiErr::ErrParams(Some(e.to_string())));
     }
-    service::role::create(req).await
+    service::position::create(req).await
 }
 
 pub async fn info(
@@ -33,7 +33,7 @@ pub async fn info(
     Path(role_id): Path<u64>,
 ) -> Result<ApiOK<RespInfo>> {
 
-    service::role::info(role_id).await
+    service::position::info(role_id).await
 }
 
 pub async fn list(
@@ -41,7 +41,7 @@ pub async fn list(
     Query(query): Query<HashMap<String, String>>,
 ) -> Result<ApiOK<RespList>> {
 
-    service::role::list(query).await
+    service::position::list(query).await
 }
 
 
@@ -52,7 +52,7 @@ pub async fn update(
     if let Err(e) = req.validate() {
         return Err(ApiErr::ErrParams(Some(e.to_string())));
     }
-    service::role::update(req).await
+    service::position::update(req).await
 }
 
 pub async fn delete(
@@ -60,5 +60,5 @@ pub async fn delete(
     Path(role_id): Path<u64>,
 ) -> Result<ApiOK<()>>  {
 
-    service::role::delete(role_id).await
+    service::position::delete(role_id).await
 }

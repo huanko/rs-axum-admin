@@ -8,10 +8,10 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub position_id: i64,
     pub position_name: String,
-    pub level: Option<String>,
-    pub sort: Option<i32>,
-    pub remark: Option<String>,
-    pub deleted_flag: Option<i8>,
+    pub level: String,
+    pub sort: i64,
+    pub remark: String,
+    pub deleted_flag: i64,
     pub create_time: i64,
     pub update_time: i64,
 }
