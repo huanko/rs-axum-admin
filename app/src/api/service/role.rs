@@ -80,7 +80,7 @@ pub struct RespList {
 
 /** 获取列表 */
 pub async fn list(query: HashMap<String, String>) -> Result<ApiOK<RespList>> {
-    /** 查询条件 */
+    /** 封装查询条件 */
     let mut builder = TRole::find();
     if let Some(rolename) = query.get("rolename") {
         if !rolename.is_empty() {

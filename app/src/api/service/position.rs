@@ -178,20 +178,7 @@ pub struct UpdateInfo {
 }
 /** 修改方法 */
 pub async fn update(req: UpdateInfo) -> Result<ApiOK<()>> {
-    /* 判断角色名称或角色编码是否重复*/
-    let count = TPosition::find()
-        .filter(t_position::Column::PositionName.eq(req.postname.clone()))
-        .count(db::conn())
-        .await
-        .map_err(|e| {
-            tracing::error!(error = ?e, "error count t_position");
-            ApiErr::ErrSystem(None)
-        })?;
-    
-    if count > 0 {
-        return Err(ApiErr::ErrPerm(Some("职务名称重复".to_string())));
-    }
-
+   
     let now = xtime::now(offset!(+8)).unix_timestamp();
     let model = t_position::ActiveModel {
         position_name: Set(req.postname),
