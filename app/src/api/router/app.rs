@@ -7,7 +7,7 @@ use axum::{
 use tower_http::trace::TraceLayer;
 
 use crate::api::{
-    controller::{login,role,position},
+    controller::{department, login, position, role},
     middleware,
 };
 
@@ -22,6 +22,9 @@ pub fn init() -> Router{
         .route("/roles/:post_id", get(role::info).post(role::update).delete(role::delete))
         .route("/positions", get(position::list).post(position::create))
         .route("/positions/:post_id", get(position::info).post(position::update).delete(position::delete))
+        .route("/department", get(department::list).post(department::create))
+        .route("/department/:department_id", get(department::info).post(department::update).delete(department::delete))
+        .route("/department/tree_list", get(department::department_tree_list))
         .layer(axum::middleware::from_fn(middleware::auth::handle));
 
         Router::new()

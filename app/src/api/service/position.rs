@@ -25,6 +25,7 @@ pub struct ReqCreate {
     pub remark: String,
 }
 
+/** 添加方法 */
 pub async fn create(req: ReqCreate) -> Result<ApiOK<()>> {
     
     let count = TPosition::find()
@@ -198,6 +199,7 @@ pub async fn update(req: UpdateInfo) -> Result<ApiOK<()>> {
 
 /** 删除 */
 pub async fn delete(postid: u64) -> Result<ApiOK<()>> {
+
     if let Err(e) = TPosition::delete_by_id(postid as i64).exec(db::conn()).await {
         tracing::error!(error = ?e, "error delete t_position");
         return Err(ApiErr::ErrSystem(None));

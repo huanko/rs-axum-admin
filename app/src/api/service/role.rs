@@ -28,7 +28,7 @@ pub struct ReqCreate {
 
 /** 添加方法 */
 pub async fn create(req: ReqCreate) -> Result<ApiOK<()>> {
-    let count = TRole::find()
+    let count= TRole::find()
         .filter(Condition::any().add(t_role::Column::RoleName.eq(req.rolename.clone())).add(t_role::Column::RoleCode.eq(req.rolecode.clone())))
         .count(db::conn())
         .await
@@ -225,3 +225,5 @@ pub async fn delete(roleid: u64) -> Result<ApiOK<()>> {
     }
     Ok(ApiOK(None))
 }
+
+

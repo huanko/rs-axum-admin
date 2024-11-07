@@ -7,3 +7,4 @@ pub mod crypto;
 pub mod util;
 pub mod xtime;
 pub mod middleware;
+pub mod tree;
