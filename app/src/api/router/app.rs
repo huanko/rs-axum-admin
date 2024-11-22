@@ -20,11 +20,13 @@ pub fn init() -> Router{
         .route("/logout", get(login::logout))
         .route("/roles", get(role::list).post(role::create))
         .route("/roles/:post_id", get(role::info).post(role::update).delete(role::delete))
+        .route("roles/select_list", role::select_list)
         .route("/positions", get(position::list).post(position::create))
         .route("/positions/:post_id", get(position::info).post(position::update).delete(position::delete))
+        .route("positions/select_list", position::select_list)
         .route("/department", get(department::list).post(department::create))
         .route("/department/:department_id", get(department::info).post(department::update).delete(department::delete))
-        .route("/department/tree_list", get(department::department_tree_list))
+        .route("/department/select_list", get(department::select_list))
         .layer(axum::middleware::from_fn(middleware::auth::handle));
 
         Router::new()

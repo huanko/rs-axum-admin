@@ -206,3 +206,31 @@ pub async fn delete(postid: u64) -> Result<ApiOK<()>> {
     }
     Ok(ApiOK(None))
 }
+
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct RespSelect {
+    pub postid: i64,
+    pub postname: String,
+}
+
+pub async fn select_list() -> Result<ApiOK<Vec<RespSelect>>> {
+
+    let models = TPosition::find()
+            .all(db::conn())
+            .await
+            .map_err(|e| {
+                tracing::error!(error = ?e, "error find t_position");
+                ApiErr::ErrSystem(None)
+            })?;
+
+    let mut list: Vec<RespSelect> = Vec::with_capacity(models.len());
+    for model in models {
+        list.push(RespSelect {
+            postid: model.position_id,
+            postname: model.position_name,
+        });
+    }        
+
+    Ok(ApiOK(Some(list)))
+}

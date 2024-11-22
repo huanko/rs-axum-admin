@@ -227,3 +227,28 @@ pub async fn delete(roleid: u64) -> Result<ApiOK<()>> {
 }
 
 
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct RespSelect {
+    pub roleid: i64,
+    pub rolename: String,
+}
+
+
+pub async fn select_list() -> Result<ApiOK<Vec<RespSelect>>> {
+    let models = TRole::find()
+        .all(db::conn())
+        .await
+        .map_err(|e| {
+            tracing::error!(error = ?e, "error find t_role");
+            ApiErr::ErrSystem(None)
+        })?;
+    let mut list: Vec<RespSelect> = Vec::with_capacity(models.len());
+    for model in models {
+        list.push(RespSelect {
+            roleid: model.role_id,
+            rolename: model.role_name,
+        });
+    }
+    Ok(ApiOK(Some(list)))
+}

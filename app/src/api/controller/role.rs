@@ -9,7 +9,7 @@ use validator::Validate;
 
 use crate::api::service::{
     self,
-    role::{ReqCreate, RespInfo, RespList,UpdateInfo},
+    role::{ReqCreate, RespInfo, RespList,UpdateInfo, RespSelect},
 };
 use pkg::identity::Identity;
 use pkg::result::{
@@ -61,4 +61,11 @@ pub async fn delete(
 ) -> Result<ApiOK<()>>  {
 
     service::role::delete(role_id).await
+}
+
+
+pub async fn select_list(
+    Extension(identity): Extension<Identity>
+) -> Result<ApiOK<Vec<RespSelect>>> {
+    service::role::select_list().await
 }

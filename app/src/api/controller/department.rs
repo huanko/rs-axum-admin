@@ -64,7 +64,8 @@ pub async fn delete(
 }
 
 
-pub async fn department_tree_list(Extension(identity): Extension<Identity>
+pub async fn select_list(
+    Extension(identity): Extension<Identity>
 ) -> Result<ApiOK<Vec<tree::TreeNode>>>{
-    service::department::tree_list().await
+    service::department::select_list().await
 }

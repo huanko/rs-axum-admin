@@ -9,14 +9,13 @@ use validator::Validate;
 
 use crate::api::service::{
     self,
-    position::{ReqCreate, RespInfo, RespList,UpdateInfo,RespSelect},
+    employee::{self, ReqCreate, RespInfo, RespList, UpdateInfo},
 };
 use pkg::identity::Identity;
 use pkg::result::{
     rejection::IRejection,
     response::{ApiErr, ApiOK, Result},
 };
-
 
 pub async fn create(
     Extension(identity): Extension<Identity>,
@@ -25,23 +24,24 @@ pub async fn create(
     if let Err(e) = req.validate() {
         return Err(ApiErr::ErrParams(Some(e.to_string())));
     }
-    service::position::create(req).await
+    service::employee::create(req).await
 }
 
 pub async fn info(
     Extension(identity): Extension<Identity>,
-    Path(role_id): Path<u64>,
+    Path(employee_id): Path<i64>,
 ) -> Result<ApiOK<RespInfo>> {
 
-    service::position::info(role_id).await
+    service::employee::info(employee_id).await
 }
+
 
 pub async fn list(
     Extension(identity): Extension<Identity>,
     Query(query): Query<HashMap<String, String>>,
 ) -> Result<ApiOK<RespList>> {
 
-    service::position::list(query).await
+    service::employee::list(query).await
 }
 
 
@@ -52,20 +52,30 @@ pub async fn update(
     if let Err(e) = req.validate() {
         return Err(ApiErr::ErrParams(Some(e.to_string())));
     }
-    service::position::update(req).await
+    service::employee::update(req).await
 }
 
-pub async fn delete(
+
+pub async fn disabled_flag(
     Extension(identity): Extension<Identity>,
-    Path(post_id): Path<u64>,
-) -> Result<ApiOK<()>>  {
-
-    service::position::delete(post_id).await
+    Path(employee_id): Path<i64>,
+    Path(disabled_flag): Path<u8>,
+)-> Result<ApiOK<()>> {
+    service::employee::disabled_flag(employee_id, disabled_flag).await
 }
 
 
-pub async fn select_list(
-    Extension(identity): Extension<Identity>
-) -> Result<ApiOK<Vec<RespSelect>>> {
-    service::position::select_list().await
+pub async fn reset_password(
+    Extension(identity): Extension<Identity>,
+    Path(employee_id): Path<i64>,
+)-> Result<ApiOK<()>> {
+    service::employee::reset_password(employee_id).await
+}
+
+pub async fn change_department(
+    Extension(identity): Extension<Identity>,
+    Path(employee_id): Path<Vec<i64>>,
+    Path(department_id): Path<i64>,
+)-> Result<ApiOK<()>> {
+    service::employee::change_department(employee_id, department_id).await
 }

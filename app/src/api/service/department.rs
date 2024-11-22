@@ -16,7 +16,7 @@ use pkg::{
 
 
 use crate::ent::{
-    t_department, prelude::TDepartment
+    t_department, prelude::TDepartment, t_employee, prelude::TEmployee
 };
 
 
@@ -65,16 +65,16 @@ pub async fn create(req: ReqCreate) -> Result<ApiOK<()>> {
     Ok(ApiOK(None))
 }
 
-// 临时存储树形数据
+// 封装部门下拉列表数据对象
 #[derive(Debug, Validate, Deserialize, Serialize)]
-pub struct TreeDeptResult {
+pub struct RespSelect {
     pub department_id: i64,
     pub department_name: String,
     pub parent_id: i64,
 }
 
 // 查询部门树形列表
-pub async fn tree_list() ->  Result<ApiOK<Vec<tree::TreeNode>>> {
+pub async fn select_list() ->  Result<ApiOK<Vec<tree::TreeNode>>> {
     let department_list= TDepartment::find()
             .select_only()
             .column(t_department::Column::DepartmentId)
@@ -89,7 +89,7 @@ pub async fn tree_list() ->  Result<ApiOK<Vec<tree::TreeNode>>> {
 
     let mut list = Vec::new();
     for department in &department_list {
-        list.push(TreeDeptResult {
+        list.push(RespSelect {
             department_id: department.department_id,
             department_name: department.department_name.clone(),
             parent_id: department.parent_id,
@@ -97,7 +97,7 @@ pub async fn tree_list() ->  Result<ApiOK<Vec<tree::TreeNode>>> {
     }
 
     let tuple_list = list.iter().map(|item| (item.department_id,item.department_name.clone(),Some(item.parent_id))).collect::<Vec<_>>();
-    let tuple_node = tree::build_tree(tuple_list);
+    let tuple_node: Option<Vec<tree::TreeNode>> = tree::build_tree(tuple_list);
     Ok(ApiOK(tuple_node))
 }
 
@@ -245,7 +245,7 @@ pub async fn update(req: UpdateInfo) -> Result<ApiOK<()>> {
 // 删除部门
 pub async fn delete(department_id: i64) -> Result<ApiOK<()>> {
     //判断是否有子部门
-    let count = TDepartment::find()
+    let department_count = TDepartment::find()
         .filter(t_department::Column::ParentId.eq(department_id))
         .count(db::conn())
         .await
@@ -254,10 +254,25 @@ pub async fn delete(department_id: i64) -> Result<ApiOK<()>> {
             ApiErr::ErrSystem(None)
         })?;
     
-    if count > 0 {
+    if department_count > 0 {
         return Err(ApiErr::ErrPerm(Some("该部门下有子部门，无法删除".to_string())));
     }
-    
+
+    //判断删除部门时，该部门下是否有用户
+    let  employee_count = TEmployee::find()
+        .filter(t_employee::Column::DepartmentId.eq(department_id))
+        .count(db::conn())
+        .await
+        .map_err(|e| {
+            tracing::error!(error = ?e, "error find t_employee");
+            ApiErr::ErrSystem(None)
+        })?;
+
+    if employee_count > 0 {
+        return Err(ApiErr::ErrPerm(Some("该部门下已分配员工，无法删除".to_string())));
+    }
+
+
     if let Err(e) = TDepartment::delete_by_id(department_id).exec(db::conn()).await {
         tracing::error!(error = ?e, "error delete t_department");
         return Err(ApiErr::ErrSystem(None));
