@@ -9,7 +9,7 @@ use validator::Validate;
 
 use crate::api::service::{
     self,
-    department::{self, ReqCreate, RespInfo, RespList, UpdateInfo},
+    department::{ReqCreate, RespInfo, RespList, UpdateInfo},
 };
 use pkg::identity::Identity;
 use pkg::result::{

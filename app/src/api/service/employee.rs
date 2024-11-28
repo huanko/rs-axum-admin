@@ -17,7 +17,7 @@ use pkg::{
 };
 
 
-use crate::ent::{prelude::TEmployee, t_employee};
+use crate::ent::{prelude::TEmployee, t_employee,t_department,prelude::TDepartment};
 
 
 
@@ -314,3 +314,110 @@ pub async fn change_department(employee_id: Vec<i64>, department_id:i64) -> Resu
                 .await;    
         Ok(ApiOK(None))
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RespEmpInfo {
+    pub employee_id: i64,
+    pub realname: String,
+    pub department_id: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RespDeptInfo {
+    pub department_id: i64,
+    pub department_name: String,
+}
+
+
+// 临时存储人员下拉数据结构
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RespSelectOption {
+    pub employee_id: i64,
+    pub realname: String,
+    pub department_id: i64,
+    pub department_name: String,
+}
+
+//人员下拉框
+pub async fn employee_select_list() -> Result<ApiOK<Vec<RespSelectOption>>> {
+    
+    //查询所有未删除的员工，并取出员工id，姓名，部门id
+    let employee_models = TEmployee::find()
+        .select_only()
+        .column(t_employee::Column::EmployeeId)
+        .column(t_employee::Column::Realname)
+        .column(t_employee::Column::DepartmentId)
+        .filter(t_employee::Column::DeletedFlag.eq(0))
+        .all(db::conn())
+        .await
+        .map_err(|e| {
+            tracing::error!(error = ?e, "error find t_role");
+            ApiErr::ErrSystem(None)
+        })?;
+
+    // 将查询出来的数据封装到临时结构体RespEmpInfo中
+    let mut emp_list = Vec::with_capacity(employee_models.len());
+    for emp in employee_models {
+        emp_list.push(RespEmpInfo {
+            employee_id: emp.employee_id,
+            realname: emp.realname,
+            department_id: emp.department_id,
+        });
+    }
+
+    
+
+    // 查询部门表，并取出部门id，名称
+    let department_models = TDepartment::find()
+        .select_only()
+        .column(t_department::Column::DepartmentId)
+        .column(t_department::Column::DepartmentName)
+        .all(db::conn())
+        .await
+        .map_err(|e| {
+            tracing::error!(error = ?e, "error find t_department");
+            ApiErr::ErrSystem(None)
+        })?;
+    
+    // 将查询出来的数据封装到临时结构体RespDeptInfo中
+    let mut dept_list = Vec::with_capacity(department_models.len());
+    for dept in department_models {
+        dept_list.push(RespDeptInfo {
+            department_id: dept.department_id,
+            department_name: dept.department_name,
+        });
+    }
+
+    // 将员工表和部门表的数据合并
+    let mut list: Vec<RespSelectOption> = merge_employee_department(emp_list, dept_list);
+
+    Ok(ApiOK(Some(list)))
+}
+
+// 根据员工表数据和部门数据，合并生成下拉框数据
+fn merge_employee_department(employee_list: Vec<RespEmpInfo>, department_list:Vec<RespDeptInfo>) -> Vec<RespSelectOption> {
+
+    // 定义存储的数据集合,并初始化
+    let mut result = Vec::with_capacity(employee_list.len());
+
+    // 将部门数据存储到hashmap中
+    let department_map: HashMap<i64,String> = department_list
+        .into_iter()
+        .map(|dept| (dept.department_id, dept.department_name))
+        .collect();
+
+    // 遍历员工数据，如果部门id在hashmap中存在，则将数据添加到result
+    for employee in employee_list {
+        if let Some(department_name) = department_map.get(&employee.department_id){
+            let info = RespSelectOption {
+                employee_id: employee.employee_id,
+                realname: employee.realname,
+                department_id: employee.department_id,
+                department_name: department_name.clone(),
+            };
+            result.push(info);
+        }   
+    }
+    result
+
+}   

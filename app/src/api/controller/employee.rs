@@ -9,7 +9,7 @@ use validator::Validate;
 
 use crate::api::service::{
     self,
-    employee::{self, ReqCreate, RespInfo, RespList, UpdateInfo},
+    employee::{ReqCreate, RespInfo, RespList, UpdateInfo,RespSelectOption},
 };
 use pkg::identity::Identity;
 use pkg::result::{
@@ -78,4 +78,10 @@ pub async fn change_department(
     Path(department_id): Path<i64>,
 )-> Result<ApiOK<()>> {
     service::employee::change_department(employee_id, department_id).await
+}
+
+pub async fn employee_select_list(
+
+)-> Result<ApiOK<Vec<RespSelectOption>>> {
+    service::employee::employee_select_list().await
 }

@@ -9,7 +9,7 @@ use validator::Validate;
 
 use crate::api::service::{
     self,
-    role::{ReqCreate, RespInfo, RespList,UpdateInfo, RespSelect},
+    role::{ReqCreate, RespInfo, RespList,UpdateInfo, RespSelect, RespEmpList},
 };
 use pkg::identity::Identity;
 use pkg::result::{
@@ -68,4 +68,13 @@ pub async fn select_list(
     Extension(identity): Extension<Identity>
 ) -> Result<ApiOK<Vec<RespSelect>>> {
     service::role::select_list().await
+}
+
+
+// 根据角色Id查询对应角色下的员工列表,参数包含角色Id、员工姓名、员工手机号、登录名
+pub async fn role_emp_list(
+    Extension(identity): Extension<Identity>,
+    Query(query): Query<HashMap<String, String>>
+) -> Result<ApiOK<RespEmpList>> {
+    service::role::role_emp_list(query).await
 }
