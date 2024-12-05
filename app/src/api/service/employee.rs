@@ -389,7 +389,7 @@ pub async fn employee_select_list() -> Result<ApiOK<Vec<RespSelectOption>>> {
     }
 
     // 将员工表和部门表的数据合并
-    let mut list: Vec<RespSelectOption> = merge_employee_department(emp_list, dept_list);
+    let list: Vec<RespSelectOption> = merge_employee_department(emp_list, dept_list);
 
     Ok(ApiOK(Some(list)))
 }

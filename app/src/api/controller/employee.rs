@@ -58,8 +58,7 @@ pub async fn update(
 
 pub async fn disabled_flag(
     Extension(identity): Extension<Identity>,
-    Path(employee_id): Path<i64>,
-    Path(disabled_flag): Path<u8>,
+    Path((employee_id, disabled_flag)): Path<(i64,u8)>,
 )-> Result<ApiOK<()>> {
     service::employee::disabled_flag(employee_id, disabled_flag).await
 }
@@ -74,14 +73,13 @@ pub async fn reset_password(
 
 pub async fn change_department(
     Extension(identity): Extension<Identity>,
-    Path(employee_id): Path<Vec<i64>>,
-    Path(department_id): Path<i64>,
+    Path((employee_id, department_id)): Path<(Vec<i64>, i64)>,
 )-> Result<ApiOK<()>> {
     service::employee::change_department(employee_id, department_id).await
 }
 
 pub async fn employee_select_list(
-
+    Extension(identity): Extension<Identity>,
 )-> Result<ApiOK<Vec<RespSelectOption>>> {
     service::employee::employee_select_list().await
 }

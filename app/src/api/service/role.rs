@@ -11,10 +11,16 @@ use pkg::{
     db,
     result::response::{ApiErr, ApiOK, Result},
     util, xtime,
+    tree,
 };
 
-use crate::ent::{t_role, prelude::TRole,
-t_role_employee, prelude::TRoleEmployee, t_employee, prelude::TEmployee};
+use crate::ent::{
+        t_role, prelude::TRole,
+        t_role_employee, prelude::TRoleEmployee, 
+        t_employee, prelude::TEmployee, 
+        t_menu, prelude::TMenu, 
+        t_role_menu, prelude::TRoleMenu
+};
 
 /** 封装添加数据对象 */
 #[derive(Debug, Validate, Deserialize, Serialize)]
@@ -381,4 +387,72 @@ fn convert_string_to_i64(opt_str: Option<&String>) -> Option<i64> {
         Some(s) => Some(s.parse::<i64>().unwrap_or_default()),
         None => None
     }
+}
+
+
+/** 返回列表数据对象 */
+#[derive(Debug, Serialize)]
+pub struct RespMenuSelect {
+    pub menu_id: i64,
+    pub menu_name: String,
+    pub parent_id: i64,
+}
+
+//查询所有访问资源
+pub async fn menu_list() -> Result<ApiOK<Vec<tree::TreeNode>>> {
+    let menu_list = TMenu::find()
+    .select_only()
+    .column(t_menu::Column::MenuId)
+    .column(t_menu::Column::MenuName)
+    .column(t_menu::Column::ParentId)
+    .all(db::conn())
+    .await
+    .map_err(|e| {
+        tracing::error!(error = ?e, "error find t_department");
+        ApiErr::ErrSystem(None)
+    })?;
+
+    let mut list = Vec::new();
+    for menu in &menu_list{
+        list.push(RespMenuSelect{
+            menu_id:menu.menu_id,
+            menu_name: menu.menu_name.clone(),
+            parent_id: menu.parent_id,
+        });
+    }
+
+    let tuple_list = list.iter().map(|i| (i.menu_id, i.menu_name.clone(), Some(i.parent_id))).collect::<Vec<_>>();
+    let tuple_node = tree::build_tree(tuple_list);
+    Ok(ApiOK(tuple_node))
+}
+
+
+#[derive(Debug, Serialize)]
+pub struct RespRoleMenu {
+    pub role_id: i64,
+    pub menu_id: i64,
+}
+
+//根据角色查询该角色可以访问的资源ID
+pub async fn role_menu(roleid: i64) -> Result<ApiOK<Vec<RespRoleMenu>>> {
+    let role_menu = TRoleMenu::find()
+    .filter(t_role_menu::Column::RoleId.eq(roleid))
+    .select_only()
+    .column(t_role_menu::Column::MenuId)
+    .column(t_role_menu::Column::RoleId)
+    .all(db::conn())
+    .await
+    .map_err(|e| {
+        tracing::error!(error = ?e, "error find t_role_menu");
+        ApiErr::ErrSystem(None)
+    })?;
+
+    let mut list = Vec::new();
+    for menu in &role_menu{
+        list.push(RespRoleMenu{
+            role_id: menu.role_id,
+            menu_id: menu.menu_id,
+        });
+    }
+    Ok(ApiOK(Some(list)))
 }

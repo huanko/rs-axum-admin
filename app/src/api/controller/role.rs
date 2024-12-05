@@ -9,7 +9,7 @@ use validator::Validate;
 
 use crate::api::service::{
     self,
-    role::{ReqCreate, RespInfo, RespList,UpdateInfo, RespSelect, RespEmpList},
+    role::{ReqCreate, RespInfo, RespList,UpdateInfo, RespSelect, RespEmpList,RespRoleMenu},
 };
 use pkg::identity::Identity;
 use pkg::result::{
@@ -17,6 +17,7 @@ use pkg::result::{
     response::{ApiErr, ApiOK, Result},
 };
 
+use pkg::tree;
 
 pub async fn create(
     Extension(identity): Extension<Identity>,
@@ -77,4 +78,19 @@ pub async fn role_emp_list(
     Query(query): Query<HashMap<String, String>>
 ) -> Result<ApiOK<RespEmpList>> {
     service::role::role_emp_list(query).await
+}
+
+//功能权限-查询所有功能权限
+pub async fn role_func_list(
+    Extension(identity): Extension<Identity>,
+) -> Result<ApiOK<Vec<tree::TreeNode>>>{
+    service::role::menu_list().await
+}
+
+//功能权限-根据角色Id查询对应角色下的功能ID列表
+pub async fn role_func_id(
+    Extension(identity): Extension<Identity>,
+    Path(role_id): Path<i64>
+) -> Result<ApiOK<Vec<RespRoleMenu>>>{
+    service::role::role_menu(role_id).await
 }
