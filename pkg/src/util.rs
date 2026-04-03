@@ -1,9 +1,11 @@
-use rand::distributions::{Alphanumeric, DistString};
+use rand::distr::{Alphanumeric,Distribution, SampleString};
+
 use std::{borrow::Cow, collections::HashMap};
 use validator::ValidationError;
 
 pub fn nonce(size: usize) -> String {
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
+    //Alphanumeric.sample_string(&mut rng, size)
     Alphanumeric.sample_string(&mut rng, size)
 }
 

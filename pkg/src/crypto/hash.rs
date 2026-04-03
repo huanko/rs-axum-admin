@@ -1,5 +1,5 @@
-use digest::{crypto_common::BlockSizeUser, Digest, Mac};
-use hmac::{Hmac, SimpleHmac};
+use digest::{crypto_common::BlockSizeUser, Digest};
+use hmac::{Hmac, SimpleHmac,Mac};
 use md5::Md5;
 use sha1::Sha1;
 use sha2::Sha256;

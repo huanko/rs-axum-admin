@@ -33,4 +33,4 @@ mv config.toml.example config.toml
 cargo run -- serve
 
 
-#### 3. 更新中
+# 根据SmartAdmin组织架构设计https://smartadmin.vip/

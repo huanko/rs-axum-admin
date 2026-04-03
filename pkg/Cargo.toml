@@ -5,30 +5,30 @@ edition = "2021"
 
 [dependencies]
 #异步
-tokio = { version = "1.40.0", features = ["full"]}
+tokio = { version = "1.50.0", features = ["full"]}
 
 #错误处理
 anyhow = "1.0.89"
-thiserror = "1.0.64"
+thiserror = "2.0.18"
 
 #序列化/反序列化
 serde = { version = "1.0.210", features = ["derive"]} 
 serde_json = "1.0.128"
 
-config = "0.14.0"
+config = "0.15.19"
 
 
 #日志
 tracing = "0.1.40"
-tracing-subscriber = { version = "0.3.18", features = ["json"]}
+tracing-subscriber = { version = "0.3.22", features = ["json"]}
 tracing-appender = "0.2.3"
 
 #Web
-axum = { version = "0.7.6", features = ["macros"]}
-axum-extra = "0.9.4"
+axum = { version = "0.8.8", features = ["macros"]}
+axum-extra = {version = "0.12.5",features = ["with-rejection"]}
 
 # 数据验证
-validator = { version = "0.18.1", features = ["derive"]}
+validator = { version = "0.20.0", features = ["derive"]}
 
 # orm 
 sea-orm = { version = "1.0.1", features = [
@@ -39,21 +39,28 @@ sea-orm = { version = "1.0.1", features = [
 ]}
 # 日期
 chrono = "0.4.38"
-time = { version = "0.3.36", features = ["macros", "local-offset", "formatting", "parsing"] }
+time = { version = "0.3.47", features = ["macros", "local-offset", "formatting", "parsing"] }
 # 编码
 base64 = "0.22.1"
 
 # 加密
+# md-5 = "0.10.6"
+# sha1 = "0.10.6"
+# sha2 = "0.10.8"
+# hmac = "0.12.1"
+# digest = "0.11.1"
+# const-hex = "1.12.0"
+# rand = "0.10.0"
 md-5 = "0.10.6"
 sha1 = "0.10.6"
 sha2 = "0.10.8"
 hmac = "0.12.1"
-digest = "0.10.7"
+digest = "0.10"          # 改为 0.10
 const-hex = "1.12.0"
-rand = "0.8.5"
+rand = "0.10.0"
 
 # 令牌
-jsonwebtoken = "9.3.0"
+jsonwebtoken = "10.3.0"
 http = "1.1.0"
 http-body = "1.0.1"
 http-body-util = "0.1.2"

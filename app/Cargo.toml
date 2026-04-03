@@ -8,11 +8,11 @@ edition = "2021"
 clap = { version = "4.5.18", features = ["derive"]}
 
 #异步
-tokio = { version = "1.40.0", features = ["full"]}
+tokio = { version = "1.50.0", features = ["full"]}
 
 #错误处理
 anyhow = "1.0.89"
-thiserror = "1.0.64"
+thiserror = "2.0.18"
 
 #序列化/反序列化
 serde = { version = "1.0.210", features = ["derive"]} 
@@ -20,15 +20,15 @@ serde_json = "1.0.128"
 
 #日志
 tracing = "0.1.40"
-tracing-subscriber = "0.3.18"
+tracing-subscriber = "0.3.22"
 tracing-appender = "0.2.3"
 
 #Web
-axum = { version = "0.7.6", features = ["macros"]}
-axum-extra = "0.9.3"
+axum = { version = "0.8.8", features = ["macros"]}
+axum-extra = "0.12.5"
 
 # 数据验证
-validator = { version = "0.18.1", features = ["derive"]}
+validator = { version = "0.20.0", features = ["derive"]}
 
 # orm 
 sea-orm = { version = "1.0.1", features = [
